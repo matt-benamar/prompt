@@ -238,13 +238,123 @@
             background: var(--bg-tertiary);
             border: 1px solid var(--border-light);
             border-radius: 4px;
-            padding: 16px;
+            padding: 20px;
             font-family: 'Roboto Mono', 'Courier New', monospace;
             font-size: 0.875em;
             line-height: 1.6;
             color: var(--text-primary);
-            white-space: pre-wrap;
+            white-space: normal;
             word-wrap: break-word;
+        }
+
+        .prompt-code h1, .prompt-code h2, .prompt-code h3 {
+            margin-top: 16px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .prompt-code h1 {
+            font-size: 1.5em;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .prompt-code h2 {
+            font-size: 1.3em;
+        }
+
+        .prompt-code h3 {
+            font-size: 1.1em;
+        }
+
+        .prompt-code ul, .prompt-code ol {
+            margin: 12px 0;
+            padding-left: 24px;
+        }
+
+        .prompt-code li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .prompt-code p {
+            margin: 12px 0;
+            line-height: 1.6;
+        }
+
+        .prompt-code code {
+            background: var(--hover-bg);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9em;
+            color: var(--accent-color);
+        }
+
+        .prompt-code pre {
+            background: var(--hover-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 12px;
+            overflow-x: auto;
+            margin: 12px 0;
+        }
+
+        .prompt-code pre code {
+            background: none;
+            padding: 0;
+            color: var(--text-primary);
+        }
+
+        .prompt-code blockquote {
+            border-left: 4px solid var(--accent-color);
+            padding-left: 16px;
+            margin: 12px 0;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .prompt-code a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .prompt-code a:hover {
+            text-decoration: underline;
+        }
+
+        .prompt-code strong {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .prompt-code em {
+            font-style: italic;
+        }
+
+        .prompt-code hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 20px 0;
+        }
+
+        .prompt-code table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 12px 0;
+        }
+
+        .prompt-code table th,
+        .prompt-code table td {
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        .prompt-code table th {
+            background: var(--hover-bg);
+            font-weight: 600;
         }
 
         .modal {
@@ -516,7 +626,9 @@
             }
 
             emptyState.style.display = 'none';
-            container.innerHTML = prompts.map(prompt => `
+            container.innerHTML = prompts.map(prompt => {
+                const renderedMarkdown = marked.parse(prompt.code);
+                return `
                 <div class="prompt-item">
                     <div class="prompt-header" onclick="togglePrompt(${prompt.id})">
                         <div class="prompt-title">${escapeHtml(prompt.title)}</div>
@@ -527,10 +639,10 @@
                         </div>
                     </div>
                     <div class="prompt-content ${prompt.expanded ? 'expanded' : ''}">
-                        <div class="prompt-code">${escapeHtml(prompt.code)}</div>
+                        <div class="prompt-code">${renderedMarkdown}</div>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         function escapeHtml(text) {
