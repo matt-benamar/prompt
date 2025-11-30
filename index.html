@@ -537,7 +537,25 @@
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         }
 
-        function loadPrompts() {
+        async function loadPrompts() {
+            // First, try to load from prompts.json file (local, not in git)
+            try {
+                const response = await fetch('prompts.json');
+                if (response.ok) {
+                    const filePrompts = await response.json();
+                    if (Array.isArray(filePrompts) && filePrompts.length > 0) {
+                        prompts = filePrompts;
+                        saveToStorage(); // Save to localStorage for offline access
+                        renderPrompts();
+                        return;
+                    }
+                }
+            } catch (error) {
+                // File doesn't exist or can't be loaded, fall back to localStorage
+                console.log('prompts.json not found, using localStorage');
+            }
+            
+            // Fall back to localStorage
             const saved = localStorage.getItem('prompts');
             if (saved) {
                 prompts = JSON.parse(saved);
